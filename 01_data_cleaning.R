@@ -102,6 +102,17 @@ for (i in 1:nrow(orchestra)) {
   schools_df <- rbind(schools_df, temp_df)
 }
 
+
+schools_df <- schools_df |> 
+  filter(receiver != "Aspen Music Festival") |> 
+  filter(receiver != "Aspen Music Festival and School") |>
+  filter(receiver != "Born in Amsterdam.") |> 
+  mutate(
+    across(receiver, ~ gsub("Boston Conservatory University", "Boston Conservatory", .)),
+    across(receiver, ~ gsub("New England Conservatory of Music", "New England Conservatory", .)),
+    across(receiver, ~ gsub("Manhattan School of Music", "Boston Conservatory", .))
+  )
+
 # competitions
 competitions_df <- data.frame(name = character(),
                          instrument = character(),
