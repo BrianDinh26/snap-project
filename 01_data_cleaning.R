@@ -207,6 +207,7 @@ orchestra_instrument <- orchestra_network_cleanish |>
 orchestra_begin <- orchestra_network_cleanish |> 
   select(when_began_current)
 
+
 save(orchestra_type, orchestra_instrument, orchestra_begin, file = here("data/orchestra_vertexes.rda"))
 
 
