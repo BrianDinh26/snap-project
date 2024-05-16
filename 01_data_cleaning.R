@@ -187,8 +187,28 @@ orchestra_network_cleanish <- bind_rows(
   chamber_group_partners_df
 ) |> 
   filter(receiver != "unknown") |> 
-  filter(receiver != "Unknown")
+  filter(receiver != "Unknown") |> 
+  select(
+    name,
+    receiver,
+    type,
+    instrument,
+    when_began_current
+  )
 
 save(orchestra_network_cleanish, file = here("data/orchestra_network_cleanish.rda"))
+
+orchestra_type <- orchestra_network_cleanish |> 
+  select(type)
+
+orchestra_instrument <- orchestra_network_cleanish |> 
+  select(instrument)
+
+orchestra_begin <- orchestra_network_cleanish |> 
+  select(when_began_current)
+
+save(orchestra_type, orchestra_instrument, orchestra_begin, file = here("data/orchestra_vertexes.rda"))
+
+
 
 
