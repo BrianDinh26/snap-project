@@ -57,6 +57,8 @@ for (i in 1:nrow(orchestra)) {
   teachers_df <- rbind(teachers_df, temp_df)
 }
 
+teachers_df <- teachers_df |> 
+
 # schools
 schools_df <- data.frame(name = character(),
                           instrument = character(),
