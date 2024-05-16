@@ -210,6 +210,10 @@ orchestra_begin <- orchestra_network_cleanish |>
 
 save(orchestra_type, orchestra_instrument, orchestra_begin, file = here("data/orchestra_vertexes.rda"))
 
+# some other attempt
+orch_lim <- bind_rows(
+  teachers_df) |> 
+  select(name, receiver)
 
 
 

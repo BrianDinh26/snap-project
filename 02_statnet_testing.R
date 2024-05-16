@@ -53,7 +53,11 @@ orchestra_igraph <- graph.adjacency(as.matrix.network(orchestra_ties))
 net_layout <- layout_with_fr(orchestra_igraph)
 
 # plot
-plot(orchestra_igraph, layout=net_layout, edge.color='black', vertex.label = V(orchestra_igraph))
+igraph_options(vertex.size = 2, vertex.color = 'red', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
+               edge.color='gray80', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
+               vertex.label = NA)   
+
+plot(orchestra_igraph, layout=net_layout, edge.color='black', vertex.label = NA)
 # aight it works but it's also super unreadable
 # may have to limit our analysis to maybe a few things???? or like definitely less than 5414... reframe
 # the questions possibly.
@@ -75,5 +79,16 @@ igraph_options(vertex.size = 2, vertex.color = 'grey', # vertex.size changes the
 
 plot(school_igraph, layout=net_layout_school, edge.color='black', vertex.label = NA)
 
+# plotting only teachers
+
+three_ties <- as.network.matrix(orch_lim, matrix.type = "edgelist")
+three_igraph <- graph.adjacency(as.matrix.network(three_ties))
+net_layout_three <- layout_with_fr(three_igraph)
+
+igraph_options(vertex.size = 1, vertex.color = 'grey', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
+               edge.color='gray80', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
+               vertex.label = NA)    
+
+plot(three_igraph, layout=net_layout_three, edge.color='black', vertex.label = NA)
 
 
