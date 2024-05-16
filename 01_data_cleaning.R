@@ -58,6 +58,25 @@ for (i in 1:nrow(orchestra)) {
 }
 
 teachers_df <- teachers_df |> 
+  filter(receiver != "University of British Columbia") |> 
+  filter(receiver != "Temple University") |> 
+  filter(receiver != "Various") |> 
+  filter(receiver != "Not specified") |> 
+  filter(receiver != "Not mentioned") |> 
+  filter(receiver != "Not available") |> 
+  filter(receiver != "Juilliard Preparatory Division") |> 
+  filter(receiver != "N/A") |> 
+  filter(receiver != "Paris Conservatoire") |> 
+  filter(receiver != "Central Conservatory in Beijing, China") |> 
+  filter(receiver != "Paris Conservatoire") |> 
+  filter(receiver != "Juilliard School") |> 
+  filter(receiver != "Juilliard School of Music") |> 
+  filter(receiver != "Longy School of Music") |> 
+  filter(receiver != "unknown") |> 
+  filter(receiver != "Unknown") |> 
+  filter(receiver != "Jaap van Zweden began his conducting career almost 20 years later, in 1996.") |> 
+  filter(receiver != "Jaap van Zweden was appointed the youngest-ever concertmaster of Amsterdams Royal Concertgebouw Orchestra at age 19.")
+
 
 # schools
 schools_df <- data.frame(name = character(),
