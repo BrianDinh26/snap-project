@@ -63,7 +63,7 @@ plot(orchestra_igraph, layout=net_layout, edge.color='black', vertex.label = NA)
 # the questions possibly.
 
 # attempt by visualizing only the school networks
-schools_df_2 <- schools_df |> 
+schools_df_2 <- schools_df_clean |> 
   select(
     name,
     receiver
@@ -71,13 +71,28 @@ schools_df_2 <- schools_df |>
 
 school_ties <- as.network.matrix(schools_df_2, matrix.type = "edgelist")
 school_igraph <- graph.adjacency(as.matrix.network(school_ties))
-net_layout_school <- layout_with_fr(school_igraph)
 
-igraph_options(vertex.size = 2, vertex.color = 'grey', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
-               edge.color='gray80', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
+deg <- degree(school_igraph, mode="in")
+ver_size <- deg * 0.5
+net_layout_school <- layout_with_fr(school_igraph)
+g <- graph.data.frame(schools_df_2, directed=FALSE)
+V(g)$name
+check <- as.data.frame(deg)
+
+unique(degree(school_igraph, mode="in"))
+
+igraph_options(vertex.size = 2, vertex.color = 'white', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
+               edge.color='red', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
                vertex.label = NA)    
 
-plot(school_igraph, layout=net_layout_school, edge.color='black', vertex.label = NA)
+plot(school_igraph, 
+     layout=net_layout_school, 
+     edge.color='black', 
+     #vertex.label = ifelse(degree(g, mode = "in") > 10, V(g)$name, NA),
+     vertex.color = ifelse(degree(g, mode = "in") > 10, "orange", "white"),
+     vertex.label.color = "red",
+     #vertex.size = ver_size,
+     vertex.size = 2)
 
 # plotting only teachers
 

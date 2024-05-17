@@ -57,13 +57,15 @@ for (i in 1:nrow(orchestra)) {
   teachers_df <- rbind(teachers_df, temp_df)
 }
 
-teachers_df <- teachers_df |> 
+teachers_df_clean <- teachers_df |> 
   filter(receiver != "University of British Columbia") |> 
   filter(receiver != "Temple University") |> 
   filter(receiver != "Various") |> 
   filter(receiver != "Not specified") |> 
   filter(receiver != "Not mentioned") |> 
   filter(receiver != "Not available") |> 
+  filter(receiver != "Not Available") |> 
+  filter(receiver != "") |> 
   filter(receiver != "Juilliard Preparatory Division") |> 
   filter(receiver != "N/A") |> 
   filter(receiver != "Paris Conservatoire") |> 
@@ -75,8 +77,16 @@ teachers_df <- teachers_df |>
   filter(receiver != "unknown") |> 
   filter(receiver != "Unknown") |> 
   filter(receiver != "Jaap van Zweden began his conducting career almost 20 years later, in 1996.") |> 
-  filter(receiver != "Jaap van Zweden was appointed the youngest-ever concertmaster of Amsterdams Royal Concertgebouw Orchestra at age 19.")
-
+  filter(receiver != "Jaap van Zweden was appointed the youngest-ever concertmaster of Amsterdams Royal Concertgebouw Orchestra at age 19.") |> 
+  filter(receiver != "Curtis Institute of Music in Philadelphia") |> 
+  filter(receiver != "Cleveland Institute of Music") |> 
+  filter(receiver != "Not specified in the text") |> 
+  filter(receiver != "unknown") |> 
+  filter(receiver != "Unknown") |> 
+  mutate(
+    across(receiver, ~ gsub(c("Jascha Heifetz (master classes)"), "Jascha Heifetz", .))
+  )
+  
 
 # schools
 schools_df <- data.frame(name = character(),
@@ -103,15 +113,57 @@ for (i in 1:nrow(orchestra)) {
 }
 
 
-schools_df <- schools_df |> 
+schools_df_clean <- schools_df |> 
   filter(receiver != "Aspen Music Festival") |> 
   filter(receiver != "Aspen Music Festival and School") |>
   filter(receiver != "Born in Amsterdam.") |> 
+  filter(receiver != "Yale Philharmonia") |> 
+  filter(receiver != "unknown") |> 
+  filter(receiver != "Unknown") |> 
+  filter(receiver != "The Philadelphia Orchestra") |> 
+  filter(receiver != "Los Angeles Philharmonic") |> 
   mutate(
     across(receiver, ~ gsub("Boston Conservatory University", "Boston Conservatory", .)),
+    across(receiver, ~ gsub("Boston University School for the Arts", "Boston University", .)),
+    across(receiver, ~ gsub("Boston University Tanglewood Institute", "Boston University", .)),
+    across(receiver, ~ gsub("Boston University's School of Music", "Boston University", .)),
+    across(receiver, ~ gsub("Boston Universitys College of Fine Arts", "Boston University", .)),
     across(receiver, ~ gsub("New England Conservatory of Music", "New England Conservatory", .)),
-    across(receiver, ~ gsub("Indiana Unviersity School of Music", "Indiana University", .))
+    across(receiver, ~ gsub("Brevard Music Center", "Brevard College", .)),
+    across(receiver, ~ gsub("Beijing Central Conservatory", "Central Conservatory of Music in Beijing", .)),
+    across(receiver, ~ gsub("Central Conservatory of Music (Beijing)", "Central Conservatory of Music in Beijing", .)),
+    across(receiver, ~ gsub("Cleveland Institute of Music (CIM)", "Cleveland Institute of Music", .)),
+    across(receiver, ~ gsub("Colburn Conservatory of Music", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("Colburn School Conservatory", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("Colburn School of Performing Arts", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("Colburn Schools Music Academy", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("Colburn School", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("The Colburn Conservatory", "Colburn Conservatory", .)),
+    across(receiver, ~ gsub("Indiana University School of Music", "Indiana University", .)),
+    across(receiver, ~ gsub("Yale College", "Yale University", .)),
+    across(receiver, ~ gsub("Yale School of Music", "Yale University", .)),
+    across(receiver, ~ gsub("Yale University School of Music", "Yale University", .)),
+    across(receiver, ~ gsub("University of Southern California Thornton School of Music", "USC", .)),
+    across(receiver, ~ gsub("University of Southern Californias School of Music", "USC", .)),
+    across(receiver, ~ gsub("University of Southern Californias Thornton School of Music", "USC", .)),
+    across(receiver, ~ gsub("University of Southern California", "USC", .)),
+    across(receiver, ~ gsub("USCs Thornton School of Music", "USC", .)),
+    across(receiver, ~ gsub("USC Thornton School of Music", "USC", .)),
+    across(receiver, ~ gsub("University of WisconsinMadison", "University of Wisconsin-Madison", .)),
+    across(receiver, ~ gsub("University of Michigan School of Music", "University of Michigan", .)),
+    across(receiver, ~ gsub("University of MichiganAnn Arbor", "University of Michigan", .)),
+    across(receiver, ~ gsub("University of Cincinnati CollegeConservatory of Music", "University of Cincinnati College Conservatory of Music", .)),
+    across(receiver, ~ gsub("University of Cincinnati College-Conservatory of Music", "University of Cincinnati College Conservatory of Music", .)),
+    across(receiver, ~ gsub("UCLA Herb Alpert School of Music", "UCLA", .)),
+    across(receiver, ~ gsub("University of California, Los Angeles", "UCLA", .)),
+    across(receiver, ~ gsub("Toho School of Music", "Toho School", .)),
+    across(receiver, ~ gsub("TohoGakuen School of Music", "Toho School", .)),
+    across(receiver, ~ gsub("UCLA Herb Alpert School of Music", "UCLA", .)),
+    across(receiver, ~ gsub("Northwestern University School of Music", "Northwestern University", .)),
+    across(receiver, ~ gsub("Northwestern Universitys Bienen School of Music", "Northwestern University", .)),
+    across(receiver, ~ gsub("Northwestern Universitys School of Music", "Northwestern University", .)),
   )
+sort(unique(schools_df_clean$receiver))
 
 # competitions
 competitions_df <- data.frame(name = character(),
@@ -211,8 +263,8 @@ for (i in 1:nrow(orchestra)) {
 
 # bind rows together and filter out unknowns
 orchestra_network_cleanish <- bind_rows(
-  teachers_df,
-  schools_df,
+  teachers_df_clean,
+  schools_df_clean,
   festivals_df,
   competitions_df,
   chamber_groups_df,
