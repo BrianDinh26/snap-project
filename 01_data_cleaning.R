@@ -122,6 +122,17 @@ schools_df_clean <- schools_df |>
   filter(receiver != "Unknown") |> 
   filter(receiver != "The Philadelphia Orchestra") |> 
   filter(receiver != "Los Angeles Philharmonic") |> 
+  filter(receiver != "Juilliard Pre-College Division") |> 
+  filter(receiver != "Interlochen Arts Academy High School") |> 
+  filter(receiver != "Louisville Orchestra") |>
+  filter(receiver != "New World Symphony") |>
+  filter(receiver != "New York Philharmonic") |>
+  filter(receiver != "Temple Preparatory School") |>
+  filter(receiver != "Tanglewood Festival") |>
+  filter(receiver != "Colorado Philharmonic") |>
+  filter(receiver != "Cleveland Institute of Music (CIM)") |> 
+  filter(receiver != "Manhattan School of Music Precollege program") |> 
+  filter(receiver != "Curtis Institute (Philadelphia") |> 
   mutate(
     across(receiver, ~ gsub("Boston Conservatory University", "Boston Conservatory", .)),
     across(receiver, ~ gsub("Boston University School for the Arts", "Boston University", .)),
@@ -133,6 +144,7 @@ schools_df_clean <- schools_df |>
     across(receiver, ~ gsub("Beijing Central Conservatory", "Central Conservatory of Music in Beijing", .)),
     across(receiver, ~ gsub("Central Conservatory of Music (Beijing)", "Central Conservatory of Music in Beijing", .)),
     across(receiver, ~ gsub("Cleveland Institute of Music (CIM)", "Cleveland Institute of Music", .)),
+    across(receiver, ~ gsub("The Cleveland Institute of Music" , "Cleveland Institute of Music", .)),
     across(receiver, ~ gsub("Colburn Conservatory of Music", "Colburn Conservatory", .)),
     across(receiver, ~ gsub("Colburn School Conservatory", "Colburn Conservatory", .)),
     across(receiver, ~ gsub("Colburn School of Performing Arts", "Colburn Conservatory", .)),
@@ -140,6 +152,11 @@ schools_df_clean <- schools_df |>
     across(receiver, ~ gsub("Colburn School", "Colburn Conservatory", .)),
     across(receiver, ~ gsub("The Colburn Conservatory", "Colburn Conservatory", .)),
     across(receiver, ~ gsub("Indiana University School of Music", "Indiana University", .)),
+    across(receiver, ~ gsub("Indiana University Jacobs School of Music", "Indiana University", .)),
+    across(receiver, ~ gsub("Indiana University String Academy", "Indiana University", .)),
+    across(receiver, ~ gsub("Indiana Universitys Jacobs School of Music", "Indiana University", .)),
+    across(receiver, ~ gsub("Jacobs School of Music at Indiana University", "Indiana University", .)),
+    across(receiver, ~ gsub("Jacobs School of Music Indiana University", "Indiana University", .)),
     across(receiver, ~ gsub("Yale College", "Yale University", .)),
     across(receiver, ~ gsub("Yale School of Music", "Yale University", .)),
     across(receiver, ~ gsub("Yale University School of Music", "Yale University", .)),
@@ -162,7 +179,36 @@ schools_df_clean <- schools_df |>
     across(receiver, ~ gsub("Northwestern University School of Music", "Northwestern University", .)),
     across(receiver, ~ gsub("Northwestern Universitys Bienen School of Music", "Northwestern University", .)),
     across(receiver, ~ gsub("Northwestern Universitys School of Music", "Northwestern University", .)),
+    across(receiver, ~ gsub("The Juilliard School", "Juilliard School", .)),
+    across(receiver, ~ gsub("Juilliard School of Music", "Juilliard School", .)),
+    across(receiver, ~ gsub("Eastman School of Musics Preparatory Department", "Eastman", .)),
+    across(receiver, ~ gsub("Eastman School of Music", "Eastman", .)),
+    across(receiver, ~ gsub("Oberlin College and Conservatory of Music", "Oberlin College", .)),
+    across(receiver, ~ gsub("Oberlin College Conservatory of Music", "Oberlin College", .)),
+    across(receiver, ~ gsub("Oberlin Conservatory of Music", "Oberlin College", .)),
+    across(receiver, ~ gsub("Oberlin Conservatory", "Oberlin College", .)),
+    across(receiver, ~ gsub("State University of New York at Purchase", "SUNY Purchase", .)),
+    across(receiver, ~ gsub("St. Petersburg Conservatory School of Music", "St. Petersburg Conservatory", .)),
+    across(receiver, ~ gsub("Special Music School at St. Petersburg", "St. Petersburg Conservatory", .)),
+    across(receiver, ~ gsub("Shepherd School of Music at Rice University", "Rice University", .)),
+    across(receiver, ~ gsub("Rice Universitys Shepherd School of Music", "Rice University", .)),
+    across(receiver, ~ gsub("Rice University's Shepherd School of Music", "Rice University", .)),
+    across(receiver, ~ gsub("Rice University School of Music", "Rice University", .)),
+    across(receiver, ~ gsub("Rice University Shepherd School of Music" , "Rice University", .)),
+    across(receiver, ~ gsub("San Francisco Conservatory of Music Preparatory Division" , "San Francisco Conservatory", .)),
+    across(receiver, ~ gsub("San Francisco Conservatory of Music" , "San Francisco Conservatory", .)),
+    across(receiver, ~ gsub("Curtis Institute (Philadelphia)", "Curtis Institute", .)),
+    across(receiver, ~ gsub("The Curtis Institute", "Curtis Institute", .)),
+    across(receiver, ~ gsub("Curtis Institute of Music", "Curtis Institute", .)),
+    across(receiver, ~ gsub("Geneva Conservatory", "Genevea", .)),
+    across(receiver, ~ gsub("Geneva", "Geneva Conservatory", .)),
+    across(receiver, ~ gsub("Peabody Conservatory of Johns Hopkins University", "Peabody Conservatory", .)),
+    across(receiver, ~ gsub("Peabody Institute of the Johns Hopkins University", "Peabody Conservatory", .)),
+    across(receiver, ~ gsub("Peabody Institute", "Peabody Conservatory", .)),
+    across(receiver, ~ gsub("New England Conservatory Preparatory Division", "New England Conservatory", .)),
+    across(receiver, ~ gsub("New England Conservatory Preparatory School", "New England Conservatory", .)),
   )
+
 sort(unique(schools_df_clean$receiver))
 
 # competitions
@@ -280,7 +326,7 @@ orchestra_network_cleanish <- bind_rows(
     when_began_current
   )
 
-save(orchestra_network_cleanish, file = here("data/orchestra_network_cleanish.rda"))
+save(orchestra_network_cleanish, schools_df_clean, teachers_df_clean, file = here("data/orchestra_network_cleanish.rda"))
 
 orchestra_type <- orchestra_network_cleanish |> 
   select(type)

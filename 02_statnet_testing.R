@@ -89,10 +89,9 @@ plot(school_igraph,
      layout=net_layout_school, 
      edge.color='black', 
      #vertex.label = ifelse(degree(g, mode = "in") > 10, V(g)$name, NA),
-     vertex.color = ifelse(degree(g, mode = "in") > 10, "orange", "white"),
      vertex.label.color = "red",
-     #vertex.size = ver_size,
-     vertex.size = 2)
+     vertex.size = ver_size)
+     #vertex.size = 2)
 
 # plotting only teachers
 
