@@ -283,6 +283,8 @@ for (i in 1:nrow(orchestra)) {
   chamber_groups_df <- rbind(chamber_groups_df, temp_df)
 }
 
+sort(unique(chamber_groups_df$receiver))
+
 # chamber group partners
 chamber_group_partners_df <- data.frame(name = character(),
                                 instrument = character(),
