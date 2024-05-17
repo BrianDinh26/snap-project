@@ -110,7 +110,7 @@ schools_df <- schools_df |>
   mutate(
     across(receiver, ~ gsub("Boston Conservatory University", "Boston Conservatory", .)),
     across(receiver, ~ gsub("New England Conservatory of Music", "New England Conservatory", .)),
-    across(receiver, ~ gsub("Manhattan School of Music", "Boston Conservatory", .))
+    across(receiver, ~ gsub("Indiana Unviersity School of Music", "Indiana University", .))
   )
 
 # competitions
