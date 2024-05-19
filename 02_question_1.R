@@ -1,4 +1,5 @@
 # Running baseline code from labs 1, 2, and 3 in order to complete part of the project.
+#### question #1: What schools seem to be most central/influential within the orchestra network?
 
 # load packages
 library(tidyverse)
@@ -23,7 +24,7 @@ school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_ties))
 
 save(school_igraph, file = here("data/school_igraph"))
 
-# descriptive statistics
+### descriptive statistics
 
 is_directed(school_igraph) # yes, this graph is DIRECTED
 
@@ -44,7 +45,7 @@ n * (n - 1)
 # density of network
 edge_density(school_igraph)
 
-# question #1: What schools seem to be most central/influential within the orchestra network?
+#### question #1: What schools seem to be most central/influential within the orchestra network?
 # for this question, we look towards MEASURES OF CENTRALITY... since we have a max page limit of 12,
 # go for the top 5 schools that seem to be dope...
 
@@ -67,10 +68,19 @@ centralities_school |>
 # top 5 schools by degree centrality are:
 # Juilliard, Curtis, New England COnservatory, USC, and the CLeveland Institue of Music
 
+### MEASURES OF CENTRALITY
+
+## in-degree & out-degree centrality:
+centralities_school$in_degree <- degree(sna_school, cmode = 'indegree')
+centralities_school$out_degree <- degree(sna_school, cmode = 'outdegree')
 
 # betweenness centrality:
+centralities_school$betweenness <- betweenness(sna_school)
 
-
+centralities_school |> 
+  dplyr::slice_max(order_by = betweenness, n = 5) |> 
+  select(node_name, betweenness) |> 
+  kableExtra::kable()
 
 # closeness centrality:
 centralities_school$closeness <-
@@ -79,10 +89,40 @@ centralities_school$closeness <-
     mode = 'all'
   )
 
+## in-closeness & out-closeness centrality:
+centralities_school$incloseness <- igraph::closeness(school_igraph, mode = 'in')
+centralities_school$outcloseness <- igraph::closeness(school_igraph, mode = 'out')
+
 centralities_school |> 
   dplyr::slice_max(order_by = closeness, n = 5) |> 
   select(node_name, closeness) |> 
   kableExtra::kable()
 # sorta useless tbh, maybe get rid of it in final analysis?
 
+# eigenvector centrality
+centralities_school$eigen <-
+  igraph::eigen_centrality(school_igraph)$vector
+
+centralities_school |> 
+  dplyr::slice_max(order_by = eigen, n = 5) |> 
+  select(node_name, eigen) |> 
+  kableExtra::kable()
+
+# hub centrality
+centralities_school$hub <- igraph::hub_score(school_igraph, scale = TRUE)$`vector`
+
+centralities_school |> 
+  dplyr::slice_max(order_by = hub, n = 5) |> 
+  select(node_name, hub) |> 
+  kableExtra::kable()
+
+# authority
+centralities_school$authority <- igraph::authority_score(school_igraph, scale = TRUE)$`vector`
+
+centralities_school |> 
+  dplyr::slice_max(order_by = authority, n = 5) |> 
+  select(node_name, eigen) |> 
+  kableExtra::kable()
+
+#### VISUALIZATIONS
 
