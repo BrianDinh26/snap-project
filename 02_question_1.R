@@ -126,4 +126,27 @@ centralities_school |>
   kableExtra::kable()
 
 #### VISUALIZATIONS
+library(igraph)
 
+deg <- degree(school_igraph, mode="in")
+ver_size <- (deg * 0.1) + 1
+net_layout_school <- layout_with_fr(school_igraph)
+g <- graph.data.frame(schools_df_2, directed=FALSE)
+V(g)$name
+check <- as.data.frame(deg)
+
+unique(degree(school_igraph, mode="in"))
+
+igraph_options(vertex.size = 2, vertex.color = 'white', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
+               edge.color='red', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
+               vertex.label = NA)    
+
+
+plot(
+  school_igraph,
+  layout = layout_nicely(school_igraph),
+  edge.color = 'black',
+  vertex.label = NA,
+  vertex.color = ifelse(degree(school_igraph, mode = "in") > 15, "red", "white"),
+  vertex.size = ifelse(degree(school_igraph, mode = "in") > 15, ver_size, 1.5)
+)
