@@ -44,6 +44,7 @@ n * (n - 1)
 
 # density of network
 edge_density(school_igraph)
+# 0.001815246
 
 #### question #1: What schools seem to be most central/influential within the orchestra network?
 # for this question, we look towards MEASURES OF CENTRALITY... since we have a max page limit of 12,

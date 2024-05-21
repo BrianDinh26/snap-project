@@ -26,6 +26,28 @@ teacher_igraph <- graph_from_adjacency_matrix(as.matrix.network(teacher_ties))
 
 save(teacher_igraph, file = here("data/teacher_igraph"))
 
+### descriptive statistics
+is_directed(teacher_igraph) # yes, this graph is DIRECTED
+
+# the number of nodes
+vcount(teacher_igraph) 
+# 1153 nodes
+
+# the number of edges
+ecount(teacher_igraph)
+# 1236 edges
+
+# count of potential links:
+# formula is n * (n - 1), with n being # of nodes
+n = 1153
+n * (n - 1)
+# we have 1,328,256 potential links!
+
+# density of network
+edge_density(teacher_igraph)
+# 0.0009305435
+
+
 # k-core stuff?
 detach('package:statnet', unload = TRUE)
 library(igraph)
