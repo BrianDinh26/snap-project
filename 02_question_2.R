@@ -165,7 +165,7 @@ hist(apl.rg_teacher,
 abline(v = teacher_igraph %>% mean_distance(),
        col = 'red',
        lty = 2)
-t.test(apl.rg_hmn,
+t.test(apl.rg_teacher,
        mu = teacher_igraph %>% mean_distance(.),
        alternative = 'greater')
 

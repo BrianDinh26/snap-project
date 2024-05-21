@@ -88,7 +88,8 @@ teachers_df_clean <- teachers_df |>
   mutate(
     across(receiver, ~ gsub(c("Jascha Heifetz (master classes)"), "Jascha Heifetz", .))
   )
-  
+
+sort(unique(teachers_df_clean$receiver))  
 
 # schools
 schools_df <- data.frame(name = character(),
