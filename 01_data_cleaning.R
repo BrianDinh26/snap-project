@@ -30,6 +30,8 @@ orchestra <- read_csv(here("data/output.csv")) |>
   ) |> 
   mutate_all(~replace_na(., "unknown"))
 
+save(orchestra, file = here("data/orchestra.rda"))
+
 # missingness check
 gg_miss_var(orchestra)
 
