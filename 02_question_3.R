@@ -1,6 +1,6 @@
 # Question 3:  What is the probability of an edge forming between a particular student and orchestra?
 # Probably have to change this question to be more ERGM-oriented.
-# Other ideas for question #:
+# Other ideas for question #3:
 # Test Hypothesis: if you go to a "top" school you’re more likely to participate in one of the top three festivals 
 # Award/festival participants are more likely to be in major orchestras than those who are not award/festival participants
 
@@ -140,7 +140,7 @@ schools_df_clean <- schools_df |>
     across(receiver, ~ gsub("New England Conservatory Preparatory School", "New England Conservatory", .)),
   )
 
-## create if else condition to find interlochen, aspen, or tanglewood.
+## create if else condition to find interlochen, aspen, or tanglewood. if positive, 1, if false, 0.
 grouping <- c('Interlochen', 'Aspen', 'Tanglewood')
 
 schools_df_clean_q3 <- schools_df_clean |> 
@@ -148,8 +148,10 @@ schools_df_clean_q3 <- schools_df_clean |>
     big_three_festivals = as.numeric(if_else(str_detect(festival, paste(grouping, collapse = "|")), "1", "0"))
   )
 
+# plot class distribution
 schools_df_clean_q3 |> ggplot(aes(x = big_three_festivals)) + geom_bar()
 
+# COMPUTE STATISTICS
 school_graphing_df <- schools_df_clean_q3 |> 
   select(name, receiver)
 
