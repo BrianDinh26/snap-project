@@ -29,9 +29,10 @@ school_matrix <- as.network.matrix(schools_df_clean_mat, matrix.type = "edgelist
 # ergm stuff
 model1 <- ergm(school_matrix ~ 
                  edges +
-                 istar(2)
+                 gwidegree(cutoff = 150)
                , control = control.ergm(seed = 42, MCMLE.density.guard = 1000)
                ,verbose = F
 )
 
 summary(model1)
+
