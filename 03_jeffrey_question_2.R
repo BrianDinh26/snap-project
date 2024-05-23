@@ -47,14 +47,17 @@ school_graphing_df <- schools_df_clean_q3 |>
   select(name, receiver)
 
 # graph objects and working w/ adding variables
-school_q3 <- as.network.matrix(school_graphing_df, matrix.type = "edgelist") 
+school_q3 <- as.network.matrix(school_graphing_df, matrix.type = "edgelist", directed = FALSE) 
 school_q3 |> network::set.vertex.attribute("prestige", schools_df_clean_q3$prestige)
 network::get.vertex.attribute(school_q3,"prestige")
 
-school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_q3))
+school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_q3), mode = c("undirected"))
+is_directed(school_igraph)
+
 
 sna_school <-
-  igraph::as_adjacency_matrix(school_igraph, sparse = FALSE) %>% network::as.network.matrix()
+  igraph::as_adjacency_matrix(school_igraph, sparse = FALSE) |> 
+  network::as.network.matrix()
 
 
 ### QUESTION #2 STUFF:

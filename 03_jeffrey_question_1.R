@@ -26,7 +26,16 @@ schools_df_clean_mat <- schools_df_clean |>
   select(name, receiver)
 
 # create matrix object
-school_matrix <- as.network.matrix(schools_df_clean_mat, matrix.type = "edgelist") 
+school_matrix <- as.network.matrix(schools_df_clean_mat, matrix.type = "edgelist")
+
+school_q3 <- as.network.matrix(schools_df_clean_mat, matrix.type = "edgelist") 
+
+sna_school <-
+  igraph::as_adjacency_matrix(school_q3, sparse = FALSE) %>% network::as.network.matrix()
+
+schools_df_clean_mat |> graph_from_data_frame() |>
+  as_tbl_graph() |>
+  as.undirected()
 
 # ergm stuff
 model1 <- ergm(school_matrix ~ 
