@@ -20,7 +20,7 @@ for school in schools:
 
 unique_schools = list(school_freq_dic.keys())
 
-with open(r'C:\Users\16155\Desktop\IEMS 341 - Social Network Analysis\SnapPy\The 20 Best Music Schools In The U.S..html') as fp:
+with open(r'C:\Users\16155\Desktop\IEMS 341 - Social Network Analysis\Prestige_Data\The 20 Best Music Schools In The U.S..html') as fp:
     soup = BeautifulSoup(fp, 'html.parser')
 
 elite_schools = soup.find_all("h3")
@@ -35,5 +35,7 @@ for school in unique_schools:
 
 with open('orchestra_prestige.csv', 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['School', unique_schools])
-    writer.writerow(['Prestige', school_bool])
+    writer.writerow(['School', 'Prestige'])
+    for i, j in zip(unique_schools, school_bool):
+        writer.writerow([i, j])
+
