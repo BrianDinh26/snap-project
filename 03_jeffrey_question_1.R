@@ -1,4 +1,6 @@
 # Use ERGM to find out the theta parameters (common small structures) associated with this school network.
+# NOTE: CHANGE ALL NETWORK CONVERSIONS TO UNDIRECTED.
+
 
 # load packages ----
 library(tidyverse)
@@ -30,7 +32,7 @@ school_matrix <- as.network.matrix(schools_df_clean_mat, matrix.type = "edgelist
 model1 <- ergm(school_matrix ~ 
                  edges +
                  gwidegree(cutoff = 150)
-               , control = control.ergm(seed = 42, MCMLE.density.guard = 1000)
+               , control = control.ergm(seed = 42, MCMLE.density.guard = 200)
                ,verbose = F
 )
 
