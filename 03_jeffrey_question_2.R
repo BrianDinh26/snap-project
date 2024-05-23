@@ -65,11 +65,17 @@ library(statnet)
 # create empty dataframe
 centralities_school <- data.frame('node_name' = as.character(network.vertex.names(school_q3)))
 
+centralities_school <- centralities_school |> 
+  mutate(
+    prestige = as.character(if_else(str_detect(node_name, paste(prestige_schools, collapse = "|")), "1", "0"))
+  )
+
 # degree centrality:
 centralities_school$degree <- degree(sna_school, cmode = 'freeman')
 
 centralities_school |> 
-  dplyr::slice_max(order_by = degree, n = 5) |>
+  dplyr::slice_max(order_by = degree, n = 10) |>
+  select(node_name, degree, prestige) |> 
   kableExtra::kable() 
 # top 5 schools by degree centrality are:
 # Juilliard, Curtis, New England COnservatory, USC, and the CLeveland Institue of Music
@@ -84,8 +90,8 @@ centralities_school$out_degree <- degree(sna_school, cmode = 'outdegree')
 centralities_school$betweenness <- betweenness(sna_school)
 
 centralities_school |> 
-  dplyr::slice_max(order_by = betweenness, n = 5) |> 
-  select(node_name, betweenness) |> 
+  dplyr::slice_max(order_by = betweenness, n = 10) |> 
+  select(node_name, betweenness, prestige) |> 
   kableExtra::kable()
 
 # closeness centrality:
@@ -100,8 +106,8 @@ centralities_school$incloseness <- igraph::closeness(school_igraph, mode = 'in')
 centralities_school$outcloseness <- igraph::closeness(school_igraph, mode = 'out')
 
 centralities_school |> 
-  dplyr::slice_max(order_by = closeness, n = 5) |> 
-  select(node_name, closeness) |> 
+  dplyr::slice_max(order_by = closeness, n = 10) |> 
+  select(node_name, closeness, prestige) |> 
   kableExtra::kable()
 # sorta useless tbh, maybe get rid of it in final analysis?
 
@@ -110,24 +116,24 @@ centralities_school$eigen <-
   igraph::eigen_centrality(school_igraph)$vector
 
 centralities_school |> 
-  dplyr::slice_max(order_by = eigen, n = 5) |> 
-  select(node_name, eigen) |> 
+  dplyr::slice_max(order_by = eigen, n = 10) |> 
+  select(node_name, eigen, prestige) |> 
   kableExtra::kable()
 
 # hub centrality
 centralities_school$hub <- igraph::hub_score(school_igraph, scale = TRUE)$`vector`
 
 centralities_school |> 
-  dplyr::slice_max(order_by = hub, n = 5) |> 
-  select(node_name, hub) |> 
+  dplyr::slice_max(order_by = hub, n = 10) |> 
+  select(node_name, hub, prestige) |> 
   kableExtra::kable()
 
 # authority
 centralities_school$authority <- igraph::authority_score(school_igraph, scale = TRUE)$`vector`
 
 centralities_school |> 
-  dplyr::slice_max(order_by = authority, n = 5) |> 
-  select(node_name, eigen) |> 
+  dplyr::slice_max(order_by = authority, n = 10) |> 
+  select(node_name, authority, prestige) |> 
   kableExtra::kable()
 
 save(centralities_school, file = here("results/centralities_school.rda"))
@@ -138,7 +144,6 @@ library(igraph)
 deg <- degree(school_igraph, mode="in")
 ver_size <- (deg * 0.1) + 1
 net_layout_school <- layout_with_fr(school_igraph)
-g <- graph.data.frame(schools_df_2, directed=FALSE)
 check <- as.data.frame(deg)
 igraph_options(vertex.size = 2, vertex.color = 'white', # vertex.size changes the size of nodes; vertex.color changes the color of nodes
                edge.color='red', edge.arrow.size=.1, # edge.color changes the color of ties; edge.arrow.size changes the size of tie arrow heads
@@ -147,16 +152,17 @@ igraph_options(vertex.size = 2, vertex.color = 'white', # vertex.size changes th
 
 head(V(school_igraph))
 
+
 plot(
   school_igraph,
   layout = layout_nicely(school_igraph),
   edge.color = 'black',
   vertex.label = NA,
-  vertex.color = ifelse(degree(school_igraph, mode = "in") > 15, "red", "white"),
+  vertex.color = ifelse(centralities_school$prestige == "1", "red", "white"),
+  vertex.shape = ifelse(centralities_school$prestige == "1", "csquare", "circle"),
   vertex.size = ifelse(degree(school_igraph, mode = "in") > 15, ver_size, 1.5),
   
 )
-
 
 
 ## ERGM THING WE MIGHT USE FOR QUESTION 1????? LATER
