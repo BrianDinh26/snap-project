@@ -20,21 +20,28 @@ load(here("data/orchestra.rda"))
 load(here("data/orchestra_network_cleanish.rda"))
 orchestra_prestige <- read_csv(here("Prestige_data/orchestra_prestige.csv"))
 
+orchestra_prestige |> filter(Prestige == 1)
+
 # prestige schools according to jeffrey
-prestige_schools <- c('Juilliard', 'Curtis', 'Manhattan', 'Berklee', 'Mannes', 'New England Conservatory',
-                      'Boston Conservatory', 'Cleveland Institute of Music', 'San Francisco Conservatory',
-                      'Peabody', 'Eastman', 'Oberlin', 'Academy of Vocal Arts', 'Indiana University', 'New World Symphony',
-                      'Los Angeles College of Music', 'Bard College', 'McNally Smith College of Music', 'Colburn Conservatory',
-                      'Musicians Institute')
+#prestige_schools <- c('Juilliard', 'Curtis', 'Manhattan', 'Berklee', 'Mannes', 'New England Conservatory',
+#                      'Boston Conservatory', 'Cleveland Institute of Music', 'San Francisco Conservatory',
+#                      'Peabody', 'Eastman', 'Oberlin', 'Academy of Vocal Arts', 'Indiana University', 'New World Symphony',
+#                      'Los Angeles College of Music', 'Bard College', 'McNally Smith College of Music', 'Colburn Conservatory',
+#                      'Musicians Institute')
+
+prestige_schools <- c('Juilliard', 'Curtis', 'Manhattan', 'New England Conservatory',
+                      'Boston Conservatory', 'Cleveland Institute of Music', 'San Francisco Conservatory', 'Oberlin', 'New World Symphony')
 
 # create column for prestige.
-schools_df_clean_q3 <- schools_df_clean |> 
+schools_df_clean_q2 <- schools_df_clean |> 
   mutate(
     prestige = as.character(if_else(str_detect(receiver, paste(prestige_schools, collapse = "|")), "1", "0"))
   )
 
+save(schools_df_clean_q2, file = here("results/schools_df_clean_q2.rda"))
+
 # distribution of prestige by statistical measures...
-schools_df_clean_q3 |> ggplot(aes(x = as.factor(prestige))) + 
+schools_df_clean_q2 |> ggplot(aes(x = as.factor(prestige))) + 
   geom_bar(aes(fill = as.factor(prestige))) +
   labs(title = "Distribution of Schools by Prestige in Orchestral Musician Network",
        x = "Is this school considered prestigious?",
@@ -43,15 +50,15 @@ schools_df_clean_q3 |> ggplot(aes(x = as.factor(prestige))) +
 
 
 ### SOCIAL NETWORK GRAPHING
-school_graphing_df <- schools_df_clean_q3 |> 
+school_graphing_df <- schools_df_clean_q2 |> 
   select(name, receiver)
 
 # graph objects and working w/ adding variables
-school_q3 <- as.network.matrix(school_graphing_df, matrix.type = "edgelist", directed = FALSE) 
-school_q3 |> network::set.vertex.attribute("prestige", schools_df_clean_q3$prestige)
-network::get.vertex.attribute(school_q3,"prestige")
+school_q2 <- as.network.matrix(school_graphing_df, matrix.type = "edgelist", directed = FALSE) 
+school_q2 |> network::set.vertex.attribute("prestige", schools_df_clean_q2$prestige)
+network::get.vertex.attribute(school_q2,"prestige")
 
-school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_q3), mode = c("undirected"))
+school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_q2), mode = c("undirected"))
 is_directed(school_igraph)
 
 
@@ -66,7 +73,7 @@ detach('package:igraph')
 library(statnet)
 
 # create empty dataframe
-centralities_school <- data.frame('node_name' = as.character(network.vertex.names(school_q3)))
+centralities_school <- data.frame('node_name' = as.character(network.vertex.names(school_q2)))
 
 centralities_school <- centralities_school |> 
   mutate(
@@ -169,19 +176,18 @@ plot(
 
 
 ## ERGM THING WE MIGHT USE FOR QUESTION 1????? LATER
-school_q3 |> network::set.vertex.attribute("prestige", schools_df_clean_q3$prestige)
+school_q2 |> network::set.vertex.attribute("prestige", schools_df_clean_q2$prestige)
 
 # check vertex attributes
-school_q3
-network::get.vertex.attribute(school_q3,"prestige")
+school_q2
+network::get.vertex.attribute(school_q2,"prestige")
 
 # ergm model
-summary(school_q3 ~ edges)
-summary(school_q3 ~ nodeifactor("prestige"))  
+summary(school_q2 ~ edges)
 
-model1 <- ergm(school_q3 ~ edges              
+model1 <- ergm(school_q2 ~ edges              
                # Structural patterns
-               + nodeifactor("prestige")
+               + nodefactor("prestige")
                # Model constraints
                , constraints =~ bd(maxout=5) # This constraint enforces the maximum outdegree is 5
                , control = control.ergm(seed = 42)

@@ -20,8 +20,31 @@ schools_df_clean_2 <- schools_df_clean |>
     receiver
   )
 
-school_ties <- as.network.matrix(schools_df_clean_2, matrix.type = "edgelist")
-school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_ties))
+school_ties <- as.network.matrix(schools_df_clean_2, matrix.type = "edgelist", directed = FALSE)
+school_igraph <- graph_from_adjacency_matrix(as.matrix.network(school_ties), mode = c("undirected"))
+
+#### NETWORK DESCRIPTIVE STATISTICS FOR FINAL REPORT
+# DESCRIPTIVE STATISTICS (same throughout all questions)
+
+is_directed(school_igraph)
+
+# the number of nodes
+vcount(school_igraph) 
+# 692 nodes
+
+# the number of edges
+ecount(school_igraph)
+# 868 edges
+
+# count of potential links:
+# formula is n * (n - 1), with n being # of nodes
+n = 692
+(n * (n - 1)) / 2
+# we have 239,086 potential links!
+
+# density of network
+edge_density(school_igraph)
+# 0.003630493
 
 # k-cores
 detach('package:statnet', unload = TRUE)
