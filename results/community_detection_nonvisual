@@ -58,9 +58,18 @@ kcore_schools <-
 kcore_schools
 
 # community detection algorithm & stats
+# 3 options from the lab
 cluster_schools <- school_igraph %>% cluster_walktrap()
 #cluster_schools <- school_igraph %>% cluster_edge_betweenness()
 #cluster_schools <- school_igraph %>% cluster_edge_infomap()
+
+#More possible community detection algorithms I found online
+#cluster_schools <- school_igraph %>% cluster_louvain()
+#cluster_schools <- school_igraph %>% cluster_label_prop()
+#cluster_schools <- school_igraph %>% cluster_fast_greedy()
+#cluster_schools <- school_igraph %>% cluster_leading_eigen()
+#cluster_schools <- school_igraph %>% cluster_bigclam()
+#cluster_schools <- school_igraph %>% cluster_mcl()
 
 membership_df <- as.data.frame(membership(cluster_schools))
 colnames(membership_df) <- c("group")
