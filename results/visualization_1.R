@@ -16,7 +16,7 @@ library(here)
 # load in data ----
 load(file = here("data/orchestra.rda"))
 load(file = here("data/orchestra_network_cleanish.rda"))
-load(file = here("schools_df_clean_q2.rda"))
+load(file = here("results/schools_df_clean_q2.rda"))
 
 ## CONVERT DATA INTO NETWORK DATA
 
@@ -50,7 +50,7 @@ plot(merged_data, vertex.size = 7, vertex.label = NA,
 # You can comment on the macro-level structure of your graph based on the visualization in a paragraph here
 
 # Convert merged_data into an igraph graph object
-merged_graph <- graph_from_data_frame(merged_data, directed = TRUE)
+merged_graph <- graph_from_data_frame(merged_data, directed = FALSE)
 
 # Take out the largest component from the merged graph
 merged_comp <- components(merged_graph)
@@ -72,14 +72,14 @@ plot(giantGraph_merged, vertex.size = 7, vertex.label = NA,
 # Convert merged_data into an igraph graph object
 # Plot the merged network with node color representing topics from the 'new_column' variable
 # Convert merged_data into an igraph graph object
-merged_graph <- graph_from_data_frame(merged_data, directed = TRUE)
+merged_graph <- graph_from_data_frame(merged_data, directed = FALSE)
 
 # Plot the merged network with node color representing topics from the third column of merged_data
 plot_merged_network <- merged_graph |>
   as_tbl_graph() |>
   ggraph(layout = 'fr') +
   geom_edge_link2() +
-       geom_node_label(aes(label = name, colour=new_column) +  # Color nodes by the third column (represents the orchestras)
+       geom_node_label(aes(label = name, colour=new_column)) +  # Color nodes by the third column (represents the orchestras)
   theme_void()
 
 print(plot_merged_network)
