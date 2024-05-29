@@ -26,7 +26,7 @@ schools_df_clean_mat <- schools_df_clean |>
 # Assuming 'orchestra' and 'schools_df_clean_mat' are your data frames
 
 # Selecting the relevant columns from 'orchestra'
-orchestra_subset <- orchestra[, c("name", "new_column")]
+orchestra_subset <- orchestra[, c("name", "orchestra")]
 
 # Merging the data frames based on the 'name' column
 merged_data <- merge(schools_df_clean_mat, orchestra_subset, by = "name", all.x = TRUE)
@@ -79,7 +79,7 @@ plot_merged_network <- merged_graph |>
   as_tbl_graph() |>
   ggraph(layout = 'fr') +
   geom_edge_link2() +
-       geom_node_label(aes(label = name, colour=new_column)) +  # Color nodes by the third column (represents the orchestras)
+       geom_node_label(aes(label = name, colour=orchestra)) +  # Color nodes by the third column (represents the orchestras)
   theme_void()
 
 print(plot_merged_network)

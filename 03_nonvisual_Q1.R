@@ -17,31 +17,8 @@ num_cores <- parallel::detectCores(logical = TRUE)
 
 registerDoMC(cores = num_cores)
 
-# load in data ----
-load(here("data/orchestra.rda"))
 
-# just realized we don't have each orchestra name in the data. here's the fix.
-orchestra <- orchestra |> 
-  mutate(new_column = case_when(
-    row_number() >= 1 & row_number() <= 98 ~ "Chicago Symphony Orchestra",
-    row_number() >= 99 & row_number() <= 216 ~ "LA Phil",
-    row_number() >= 217 & row_number() <= 316 ~ "Boston Symphony Orchestra",
-    row_number() >= 317 & row_number() <= 413 ~ "Philadelphia Orchestra",
-    row_number() >= 414 & row_number() <= 518 ~ "New York Philharmonic",
-    TRUE ~ NA_character_ # if there are rows outside the defined ranges, fill with NA
-  )) |> 
-  rename(orchestra = new_column)
-
-# create prestige by MUSICIAN
-prestige_schools <- c('Juilliard', 'Curtis', 'Manhattan', 'New England Conservatory',
-                      'Boston Conservatory', 'Cleveland Institute of Music', 'San Francisco Conservatory', 'Oberlin', 'New World Symphony')
-
-orchestra <- orchestra |> 
-  mutate(
-    prestige = as.character(if_else(str_detect(schools, paste(prestige_schools, collapse = "|")), "1", "0"))
-  )
-
-save(orchestra, file = here("data/orchestra.rda"))
+load(file = here("data/orchestra.rda"))
 
 # create the musician-orchestra-school network
 
@@ -193,10 +170,80 @@ musician_orchestra_school_p1 <- musician_orchestra_school |>
 
 mso_network_full <- as.network.matrix(musician_orchestra_school_p1, matrix.type = "edgelist", directed = FALSE) 
 mso_network_full |> network::set.vertex.attribute("prestige", musician_orchestra_school$prestige)
+mso_network_full |> network::set.vertex.attribute("type", musician_orchestra_school$type)
 network::get.vertex.attribute(mso_network_full,"prestige")
+network::get.vertex.attribute(mso_network_full,"type")
+
+
+musician_list <- orchestra |> 
+  select(name) |> 
+  as.list()
+
+kill_me <- musician_list |> 
+  unlist() |> 
+  as.character()
+
+schools_list <- schools_df_clean |> 
+  select(receiver) |> 
+  unique() |> 
+  as.list()
+
+gimme <- schools_list |> 
+  unlist() |> 
+  as.character()
+
+orchestra_list <- schools_df_clean |> 
+  select(orchestra) |> 
+  distinct() |> 
+  as.character() |> 
+  as.list() |> 
+  unlist()
+
+tester <- c("Chicago Symphony Orchestra", "LA Phil", "Boston Symphony Orchestra", "Philadelphia Orchestra", "New York Philharmonic")
+class(orchestra_list)
+class(category_colors)
+
+mso_network_full_2 <- mso_network_full
+
+set.vertex.attribute(mso_network_full_2, "type", index = V(mso_network_full_2)[vertex.names %in% musician_list], value = "musician")
+network::get.vertex.attribute(mso_network_full_2,"type")
+
+V(mso_igraph)
 
 mso_igraph <- graph_from_adjacency_matrix(as.matrix.network(mso_network_full), mode = c("undirected"))
-is_directed(mso_igraph)
+mso_igraph2 <- mso_igraph
+
+mso_igraph2 <- set_vertex_attr(mso_igraph2, "type", index = V(mso_igraph2)[name %in% kill_me], value = "musician")
+mso_igraph2 <- set_vertex_attr(mso_igraph2, "type", index = V(mso_igraph2)[name %in% gimme], value = "school")
+mso_igraph2 <- set_vertex_attr(mso_igraph2, "type", index = V(mso_igraph2)[name %in% tester], value = "orchestra")
+
+save(mso_igraph2, file = here("results/mso_igraph2.rda"))
+
+V(mso_igraph2)[name %in% tester]
+V(mso_igraph2)[name %in% gimme]
+V(mso_igraph2)[name %in% kill_me]
+
+
+vertex_attr(mso_igraph2)
+
+edges <- data.frame(
+  from = c("A", "B", "C", "D", "E", "F", "G", "H"),
+  to = c("B", "C", "D", "E", "F", "G", "H", "A")
+)
+
+# Create a graph from the edge list
+g <- graph_from_data_frame(edges, directed = FALSE)
+
+
+check_list <- c("A", "C", "E", "G")
+
+vertex_names <- V(g)$name
+
+# Check if vertex names are in the list
+is_in_list <- vertex_names %in% check_list
+
+# Print the logical vector
+print(is_in_list)
 
 sna_mso <-
   igraph::as_adjacency_matrix(mso_igraph, sparse = FALSE) |> 
