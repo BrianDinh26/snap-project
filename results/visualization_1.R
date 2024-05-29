@@ -11,11 +11,12 @@ library(topicmodels)
 library(textstem)
 library(udpipe)
 library(dplyr)
+library(here)
 
 # load in data ----
-load("orchestra.rda")
-load("orchestra_network_cleanish.rda")
-load("schools_df_clean_q2.rda")
+load(file = here("data/orchestra.rda"))
+load(file = here("data/orchestra_network_cleanish.rda"))
+load(file = here("schools_df_clean_q2.rda"))
 
 ## CONVERT DATA INTO NETWORK DATA
 

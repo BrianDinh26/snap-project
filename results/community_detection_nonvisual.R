@@ -9,9 +9,10 @@ library(naniar)
 library(here)
 library(igraph)
 library(statnet)
+library(here)
 
 # load in data
-load("orchestra_network_cleanish.rda")
+load(here("data/orchestra_network_cleanish.rda"))
 
 
 
